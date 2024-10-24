@@ -1,0 +1,176 @@
+
+{ "layer": "top", "position": "top", "mod": "dock", "exclusive": true, "passthrough": false, "gtk-layer-shell": true, "height": 30, 
+	  "width":1350,
+	   "spacing":15, "margin-top": 0, "margin-bottom":0,
+
+    "modules-center":["clock#date", "clock"],
+
+    "modules-left": [ "hyprland/workspaces", "hyprland/window"],
+
+    "modules-right":[
+	"cpu",
+	"memory",
+            "temperature",
+        "backlight",
+	"bluetooth", 
+	"network",
+	"pulseaudio",
+	"pulseaudio#microphone", 
+	"battery",
+	"tray",
+],
+
+     "temperature": {
+    "thermal-zone": 1,
+    "format": "{temperatureF}°F ",
+    "critical-threshold": 80,
+    "format-critical": "{temperatureC}°C ",
+  } ,
+
+"hyprland/workspaces": {
+    "format": "{icon}",
+    "format-icons": {
+           "active": "",
+	"default": ""
+    },
+	"on-click":"activate",
+   "persistent-workspaces": {
+      "*": 5,
+      },
+
+  },
+
+"clock#date": {
+	"timezone": "Asia/Kathmandu",
+	"format":"  {:%d %b}",
+        "interval": 1,
+        "on-click": "zenity --calendar",
+
+ "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "year",
+      "mode-mon-col": 3,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#ffead3'><b>{}</b></span>",
+        "days": "<span color='#ecc6d9'><b>{}</b></span>",
+        "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
+        "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
+        "today": "<span color='#ff6699'><b><u>{}</u></b></span>",
+      },
+    },
+    "actions": {
+      "on-click-right": "mode",
+      "on-click-forward": "tz_up",
+      "on-click-backward": "tz_down",
+      "on-scroll-up": "shift_up",
+      "on-scroll-down": "shift_down",
+    },
+  },
+
+       
+    "clock": {
+        "format":" {:%H:%M:%S }",
+        "timezone":"local",
+	"interval": 1,
+
+    },
+
+
+
+ "cpu": {
+    "interval": 10,
+    "format": " {usage}%",
+    "max-length": 10,
+  },
+
+ "memory": {
+    "interval": 10,
+    "format": " {}%",
+    "max-length": 10,
+    "tooltip": true,
+  },
+
+
+ "backlight": {
+    "device": "intel_backlight",
+    "format": "{icon} {percent}%",
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "on-scroll-up": "brightnessctl set 1%+",
+    "on-scroll-down": "brightnessctl set 1%-",
+    "min-length": 6,
+  },
+
+"bluetooth": {
+    "format": " {status}",
+    "format-disabled": "", // an empty format will hide the module
+    "format-connected": " {num_connections}",
+    "tooltip-format": "{device_alias}",
+    "tooltip-format-connected": " {device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}",
+	"on-click": "blueberry",
+  },
+
+
+    "network": {
+        "format-wifi": "  {signalStrength}%",
+        "format-ethernet": "Connected  ",
+        "tooltip-format": "{essid} - {ifname} via {gwaddr}",
+        "format-linked": "{ifname} (No IP)",
+        "format-disconnected": "Disconnected ⚠",
+        "on-click":"kitty -e nmtui",
+
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-bluetooth": "{icon} {volume}%",
+        "format-bluetooth-muted": "{icon} {format_source}",
+        "format-muted": "{format_source}",
+        "format-source": "",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default":["", "", ""],
+        },
+        "on-click": "pavucontrol",
+    },
+
+"pulseaudio#microphone": {
+    "format": "{format_source}",
+    "format-source": " {volume}%",
+    "format-source-muted": " Muted",
+    "on-click": "pamixer --default-source -t",
+    "on-scroll-up": "pamixer --default-source -i 1",
+    "on-scroll-down": "pamixer --default-source -d 1",
+    "scroll-step": 1,
+"on-click": "pavucontrol"
+  },
+
+
+ "battery": {
+    "states": {
+      "good": 95,
+      "warning": 30,
+      "critical": 20,
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": " {capacity}%",
+    "format-plugged": " {capacity}%",
+    "format-alt": "{time} {icon}",
+    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+  },
+
+ "tray": {
+    "icon-size": 18,
+    "spacing": 10,
+  },
+   
+},
+}
