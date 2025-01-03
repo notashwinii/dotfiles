@@ -1,0 +1,63 @@
+[font]
+normal = { family = "Fira Code", style = "Regular" }
+bold = { family = "Fira Code", style = "Bold" }
+italic = { family = "Fira Code", style = "Italic" }
+bold_italic = { family = "Fira Code", style = "Bold Italic" }
+size = 10.0 # Adjust size as preferred
+
+[terminal]
+shell = { program = "/bin/zsh", args = ["-l"] }
+
+
+# Colors (Gruvbox Material Dark Medium)
+
+#[colors.primary]
+#background = '#3d436b'
+#foreground = '#dfbf8e'
+
+#[colors.normal]
+#black   = '#665c54'
+#red     = '#ea6962'
+#green   = '#a9b665'
+#yellow  = '#e78a4e'
+#blue    = '#7daea3'
+#magenta = '#d3869b'
+#cyan    = '#89b482'
+#white   = '#dfbf8e'
+
+#[colors.bright]
+#black   = '#928374'
+#red     = '#ea6962'
+#green   = '#a9b665'
+#yellow  = '#e3a84e'
+#blue    = '#7daea3'
+#magenta = '#d3869b'
+#cyan    = '#89b482'
+#white   = '#dfbf8e'
+
+
+
+[colors.primary]
+background = '#2d2e3d'  # Darker pastel purple, almost black
+foreground = '#e0d1b3'  # Light beige foreground for high contrast
+
+[colors.normal]
+black   = '#4b4542'  # Darker muted brownish tone
+red     = '#d48c7e'  # Soft pastel red
+green   = '#86a860'  # Pastel green
+yellow  = '#d1b176'  # Darker pastel yellow
+blue    = '#6e9ca1'  # Pastel blue
+magenta = '#a97d87'  # Muted magenta
+cyan    = '#6e8b73'  # Pastel cyan
+white   = '#e0d1b3'  # Light beige
+
+[colors.bright]
+black   = '#736659'  # Muted dark tone
+red     = '#d48c7e'  # Soft pastel red
+green   = '#86a860'  # Pastel green
+yellow  = '#d1b176'  # Pastel yellow
+blue    = '#6e9ca1'  # Pastel blue
+magenta = '#a97d87'  # Muted magenta
+cyan    = '#6e8b73'  # Pastel cyan
+white   = '#e0d1b3'  # Light beige
+
