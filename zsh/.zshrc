@@ -1,3 +1,8 @@
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export INPUT_METHOD=fcitx
+
 # Debug log with absolute path
 echo "Debug: Loading zshrc at $(date)" >> /home/ash/zsh_debug.log
 
@@ -37,3 +42,15 @@ else
 fi
 
 echo "zshrc finished loading at $(date)" >> /home/ash/zsh_debug.log
+
+export ROFI_CONFIG_PATH="$HOME/.config/rofi/rounded-nord-dark.rasi"
+
+# Neovim alias
+alias nv='nvim'
+
+# Zellij aliases
+alias zl='zellij list-sessions'
+alias za='zellij attach'
+
+alias zclear= zellij delete-all-sessions
+eval "$(zoxide init zsh)"
