@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+# histsort - Remove duplicate commands from zsh histfile
+# Usage: histsort [histfile_path]
+
+# Set default histfile path
+HISTFILE_PATH="${1:-${HISTFILE:-$HOME/.config/zsh/histfile}}"
+
+# Check if histfile exists
+if [[ ! -f "$HISTFILE_PATH" ]]; then
+    echo "Error: Histfile not found at $HISTFILE_PATH" >&2
+    exit 1
+fi
+
+# Create temporary file
+TEMP_FILE=$(mktemp)
+
+# Use awk to remove duplicates while preserving order
+awk '!seen[$0]++' "$HISTFILE_PATH" > "$TEMP_FILE"
+
+# Get stats
+ORIGINAL_COUNT=$(wc -l < "$HISTFILE_PATH")
+NEW_COUNT=$(wc -l < "$TEMP_FILE")
+REMOVED_COUNT=$((ORIGINAL_COUNT - NEW_COUNT))
+
+# Replace original file with deduplicated version
+mv "$TEMP_FILE" "$HISTFILE_PATH"
+
+echo "Histfile deduplication complete!"
+echo "Original entries: $ORIGINAL_COUNT"
+echo "Unique entries: $NEW_COUNT"
+echo "Duplicates removed: $REMOVED_COUNT"
