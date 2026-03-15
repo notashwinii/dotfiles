@@ -1,52 +1,80 @@
+{
+  "layer": "top",
+  "position": "top",
+  "mod": "dock",
+  "exclusive": true,
+  "passthrough": false,
+  "gtk-layer-shell": true,
+  "height": 40,
+  "modules-left": ["custom/logo", "clock", "hyprland/workspaces"],
+  "modules-center": ["hyprland/window"],
+  "modules-right": [
+    "network",
+    "bluetooth",
+    "temperature",
+    "memory",
+    "cpu",
+    "custom/power_profile",
+    "battery",
+    "backlight",
+    "pulseaudio",
+    "pulseaudio#microphone",
+    "tray",
+  ],
 
-{ "layer": "top", "position": "top", "mod": "dock", "exclusive": true, "passthrough": false, "gtk-layer-shell": true, "height": 30, 
-	  "width":1350,
-	   "spacing":15, "margin-top": 0, "margin-bottom":0,
-
-    "modules-center":["clock#date", "clock"],
-
-    "modules-left": [ "hyprland/workspaces", "hyprland/window"],
-
-    "modules-right":[
-	"cpu",
-	"memory",
-            "temperature",
-        "backlight",
-	"bluetooth", 
-	"network",
-	"pulseaudio",
-	"pulseaudio#microphone", 
-	"battery",
-	"tray",
-],
-
-     "temperature": {
-    "thermal-zone": 1,
-    "format": "{temperatureF}°F ",
-    "critical-threshold": 80,
-    "format-critical": "{temperatureC}°C ",
-  } ,
-
-"hyprland/workspaces": {
-    "format": "{icon}",
-    "format-icons": {
-           "active": "",
-	"default": ""
-    },
-	"on-click":"activate",
-   "persistent-workspaces": {
-      "*": 5,
-      },
-
+  "custom/logo": {
+    "format": "",
+    "tooltip": true,
+    "tooltip-format": "Hyprland",
   },
 
-"clock#date": {
-	"timezone": "Asia/Kathmandu",
-	"format":"  {:%d %b}",
-        "interval": 1,
-        "on-click": "zenity --calendar",
+  "hyprland/workspaces": {
+    "format": "{name}: {icon}",
+    "format-icons": {
+      "1": "",
+      "2": "",
+      "3": "",
+      "4": "󰙯",
+      "5": "",
+      "9": "",
+      "10": "",
+      "default": "",
+    },
+    "persistent-workspaces": {
+      "*": 5, // 5 workspaces by default on every monitor
+      "HDMI-A-1": 3, // but only three on HDMI-A-1
+    },
+  },
 
- "tooltip-format": "<tt><small>{calendar}</small></tt>",
+  "memory": {
+    "interval": 10,
+    "format": "{}% ",
+    "max-length": 10,
+    "tooltip": true,
+  },
+  "cpu": {
+    "interval": 10,
+    "format": "{usage}% ",
+    "max-length": 10,
+  },
+
+  "custom/weather": {
+    //shows the current weather and forecast
+    "tooltip": true,
+    "format": "{}",
+    "interval": 30,
+    "exec": "~/.config/waybar/scripts/waybar-wttr.py",
+    "return-type": "json",
+  },
+
+  "tray": {
+    "icon-size": 18,
+    "spacing": 10,
+  },
+
+  "clock": {
+    "format": "  {:%H:%M %p   %B %d, %A}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
     "calendar": {
       "mode": "year",
       "mode-mon-col": 3,
@@ -69,31 +97,7 @@
     },
   },
 
-       
-    "clock": {
-        "format":" {:%H:%M:%S }",
-        "timezone":"local",
-	"interval": 1,
-
-    },
-
-
-
- "cpu": {
-    "interval": 10,
-    "format": " {usage}%",
-    "max-length": 10,
-  },
-
- "memory": {
-    "interval": 10,
-    "format": " {}%",
-    "max-length": 10,
-    "tooltip": true,
-  },
-
-
- "backlight": {
+  "backlight": {
     "device": "intel_backlight",
     "format": "{icon} {percent}%",
     "format-icons": ["󰃞", "󰃟", "󰃠"],
@@ -102,59 +106,7 @@
     "min-length": 6,
   },
 
-"bluetooth": {
-    "format": " {status}",
-    "format-disabled": "", // an empty format will hide the module
-    "format-connected": " {num_connections}",
-    "tooltip-format": "{device_alias}",
-    "tooltip-format-connected": " {device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_alias}",
-	"on-click": "blueberry",
-  },
-
-
-    "network": {
-        "format-wifi": "  {signalStrength}%",
-        "format-ethernet": "Connected  ",
-        "tooltip-format": "{essid} - {ifname} via {gwaddr}",
-        "format-linked": "{ifname} (No IP)",
-        "format-disconnected": "Disconnected ⚠",
-        "on-click":"kitty -e nmtui",
-
-    },
-
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-bluetooth": "{icon} {volume}%",
-        "format-bluetooth-muted": "{icon} {format_source}",
-        "format-muted": "{format_source}",
-        "format-source": "",
-        "format-source-muted": "",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default":["", "", ""],
-        },
-        "on-click": "pavucontrol",
-    },
-
-"pulseaudio#microphone": {
-    "format": "{format_source}",
-    "format-source": " {volume}%",
-    "format-source-muted": " Muted",
-    "on-click": "pamixer --default-source -t",
-    "on-scroll-up": "pamixer --default-source -i 1",
-    "on-scroll-down": "pamixer --default-source -d 1",
-    "scroll-step": 1,
-"on-click": "pavucontrol"
-  },
-
-
- "battery": {
+  "battery": {
     "states": {
       "good": 95,
       "warning": 30,
@@ -167,10 +119,57 @@
     "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
   },
 
- "tray": {
-    "icon-size": 18,
-    "spacing": 10,
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "tooltip": false,
+    "format-muted": " Muted",
+    "on-click": "amixer set Master toggle",
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "format-icons": {
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "phone": "",
+      "portable": "",
+      "car": "",
+      "default": ["", "", ""],
+    },
   },
-   
-},
+
+  "pulseaudio#microphone": {
+    "format": "{format_source}",
+    "format-source": " {volume}%",
+    "format-source-muted": " Muted",
+    "on-click": "pamixer --default-source -t",
+    "on-scroll-up": "pamixer --default-source -i 5",
+    "on-scroll-down": "pamixer --default-source -d 5",
+    "scroll-step": 5,
+  },
+
+  "temperature": {
+    "thermal-zone": 1,
+    "format": "{temperatureF}°F ",
+    "critical-threshold": 80,
+    "format-critical": "{temperatureC}°C ",
+  },
+
+  "network": {
+    // "interface": "wlp2*", // (Optional) To force the use of this interface
+    "format-wifi": "  {signalStrength}%",
+    "format-ethernet": "{ipaddr}/{cidr}",
+    "tooltip-format": "{essid} - {ifname} via {gwaddr}",
+    "format-linked": "{ifname} (No IP)",
+    "format-disconnected": "Disconnected ⚠",
+    "format-alt": "{ifname}:{essid} {ipaddr}/{cidr}",
+  },
+
+  "bluetooth": {
+    "format": " {status}",
+    "format-disabled": "", // an empty format will hide the module
+    "format-connected": " {num_connections}",
+    "tooltip-format": "{device_alias}",
+    "tooltip-format-connected": " {device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}",
+  },
 }
