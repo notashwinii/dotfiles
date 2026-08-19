@@ -1,19 +1,27 @@
 set $mod Mod4
 
 font pango:monospace 8
-exec --no-startup-id blueman-applet
+exec_always --no-startup-id sh -c 'pgrep -x blueman-applet >/dev/null || exec blueman-applet'
 
 exec --no-startup-id dex --autostart --environment i3
 
 set $term alacritty
-  
+
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
-exec --no-startup-id nm-applet
+exec_always --no-startup-id sh -c 'pgrep -x nm-applet >/dev/null || exec nm-applet'
 
 exec --no-startup-id feh --bg-scale ~/Pictures/wallpaper/8.png
 
 exec --no-startup-id picom -CGb
+
+# Start Handy voice dictation in the background
+exec --no-startup-id /home/ash/.local/bin/handy --start-hidden
+
+# Keep a read-only, approval-based Open Interpreter terminal ready. This starts
+# the assistant application, not microphone transcription; Handy remains
+# on-demand through its own shortcut.
+exec --no-startup-id /home/ash/.local/bin/assistant-window
 
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
@@ -25,16 +33,30 @@ floating_modifier $mod
 
 tiling_drag modifier titlebar
 
+# Keep the pointer where it is when keyboard focus changes to another output.
+mouse_warping none
+
 # start a terminal
-bindsym $mod+t exec $term
-bindsym $mod+Return exec $term
+bindsym $mod+t exec --no-startup-id ghostty
+bindsym $mod+Return exec --no-startup-id $term
 
 #applications shortcut keys
-bindsym $mod+x exec chromium
+bindsym $mod+x exec firefox
+bindsym $mod+z exec chromium
 
 bindsym $mod+n exec thunar
-bindsym Print exec flameshot gui
 bindsym $mod+space exec rofi -show drun
+
+# Clipboard history: select a previous copy with Super+V.
+# clipmenud records X11 clipboard changes; Rofi provides the picker UI.
+exec_always --no-startup-id sh -c 'pgrep -x clipmenud >/dev/null || exec clipmenud'
+bindsym $mod+v exec --no-startup-id sh -c 'CM_LAUNCHER=rofi clipmenu'
+
+# Toggle Handy voice dictation
+bindsym $mod+o exec --no-startup-id /home/ash/.local/bin/handy --toggle-transcription
+
+# Focus the persistent Open Interpreter terminal, or recreate it if it closed.
+bindsym $mod+Shift+o exec --no-startup-id /home/ash/.local/bin/assistant-focus
 
 # kill focused window
 bindsym $mod+k kill
@@ -43,6 +65,10 @@ bindsym $mod+k kill
 
 
 # change focus
+# Follow application activation requests across workspaces. This lets an app
+# reveal its window after its Dunst notification action is clicked.
+focus_on_window_activation focus
+
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
@@ -85,7 +111,17 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
-
+# Keep workspaces 1-5 on the laptop and 6-10 on the external monitor.
+workspace $ws1 output eDP-1
+workspace $ws2 output eDP-1
+workspace $ws3 output eDP-1
+workspace $ws4 output eDP-1
+workspace $ws5 output eDP-1
+workspace $ws6 output HDMI-1-2
+workspace $ws7 output HDMI-1-2
+workspace $ws8 output HDMI-1-2
+workspace $ws9 output HDMI-1-2
+workspace $ws10 output HDMI-1-2
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -95,7 +131,7 @@ bindsym $mod+4 workspace number $ws4
 bindsym $mod+5 workspace number $ws5
 bindsym $mod+q workspace number $ws6
 bindsym $mod+w workspace number $ws7
-bindsym $mod+8 workspace number $ws8
+bindsym $mod+e workspace number $ws8
 bindsym $mod+9 workspace number $ws9
 bindsym $mod+a workspace number $ws10
 
@@ -110,7 +146,7 @@ bindsym $mod+a workspace number $ws10
 #bindsym $mod+Shift+8 move container to workspace number $ws8
 #bindsym $mod+Shift+9 move container to workspace number $ws9
 #bindsym $mod+Shift+0 move container to workspace number $ws10
- 
+
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number $ws1; workspace number $ws1
 bindsym $mod+Shift+2 move container to workspace number $ws2; workspace number $ws2
@@ -165,3 +201,4 @@ exec_always --no-startup-id ~/.config/polybar/launch.sh
 default_border pixel 1
 default_floating_border pixel 1
 for_window [class="^.*"] border pixel 1
+bindsym Print exec --no-startup-id sh -c 'maim -s | xclip -selection clipboard -t image/png -i'

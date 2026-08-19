@@ -1,3 +1,4 @@
+export PATH="/home/ash/.nvm/versions/node/v22.16.0/bin:$PATH"
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
@@ -27,6 +28,9 @@ alias histsort='$HOME/.config/zsh/histsort'
 alias hon="~/.config/scripts/hotspot.sh start"
 alias hoff="~/.config/scripts/hotspot.sh stop"
 alias qr="~/.config/scripts/hotspot.sh qr"
+alias gpus='ssh -i ~/.ssh/safeskool-key.pem ubuntu@ec2-3-220-201-68.compute-1.amazonaws.com'
+alias cpus='ssh -i ~/.ssh/safeskool-key.pem ubuntu@ec2-52-203-120-27.compute-1.amazonaws.com'
+alias ss='xrandr --output HDMI-1-2 --scale-from 1920x1080 --transform 1.5,0,0,0,1.5,0,0,0,1 --output HDMI-1-2 --mode 1920x1080 --same-as eDP-1'
 # History settings
 HISTFILE=/home/ash/.config/zsh/histfile
 HISTSIZE=10000
@@ -67,9 +71,58 @@ eval "$(zoxide init zsh)"
 export PATH="$PATH:/home/ash/.local/bin"
 export PATH=$PATH:$(go env GOPATH)/bin
 
-#lua
-export LUA_PATH='/usr/share/lua/5.4/?.lua;/usr/local/share/lua/5.4/?.lua;/usr/local/share/lua/5.4/?/init.lua;/usr/share/lua/5.4/?/init.lua;/usr/local/lib/lua/5.4/?.lua;/usr/local/lib/lua/5.4/?/init.lua;/usr/lib/lua/5.4/?.lua;/usr/lib/lua/5.4/?/init.lua;./?.lua;./?/init.lua;/home/ash/.luarocks/share/lua/5.4/?.lua;/home/ash/.luarocks/share/lua/5.4/?/init.lua'
-export LUA_CPATH='/usr/local/lib/lua/5.4/?.so;/usr/lib/lua/5.4/?.so;/usr/local/lib/lua/5.4/loadall.so;/usr/lib/lua/5.4/loadall.so;./?.so;/home/ash/.luarocks/lib/lua/5.4/?.so'
-export PATH='/home/ash/.luarocks/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/ash/Android/Sdk/tools:/home/ash/Android/Sdk/platform-tools:/home/ash/Android/Sdk/emulator'
 
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+# opencode
+export PATH=/home/ash/.opencode/bin:$PATH
+
+. "$HOME/.local/bin/env"
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init - zsh)"
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# Keep machine-local credentials out of the public dotfiles repository.
+[[ -r "$HOME/.config/zsh/secrets.zsh" ]] && source "$HOME/.config/zsh/secrets.zsh"
+export PATH="$HOME/.pyenv/bin:$PATH"
+
+alias cursor='CODEX_HOME=$HOME/.codex-cursor cursor'
+
+# Personal Claude account. Keep its login and settings isolated from JClaude,
+# clear any gateway overrides, and forward every CLI option (including --chrome).
+claude-ash() {
+  command env \
+    -u ANTHROPIC_BASE_URL \
+    -u ANTHROPIC_AUTH_TOKEN \
+    -u CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY \
+    CLAUDE_CONFIG_DIR="$HOME/.claude-ash" \
+    claude "$@"
+}
+
+# Separate Claude account. Keep its login and settings isolated from Claude Ash,
+# clear any gateway overrides, and forward every CLI option.
+jclaude() {
+  command env \
+    -u ANTHROPIC_BASE_URL \
+    -u ANTHROPIC_AUTH_TOKEN \
+    -u CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY \
+    CLAUDE_CONFIG_DIR="$HOME/.claude-jclaude" \
+    claude "$@"
+}
+
+# kimi-code
+export PATH="/home/ash/.kimi-code/bin:$PATH"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/ash/.local/bin:$PATH"
+
+# Gemini-powered Antigravity QA lanes
+agy-smoke() {
+  command agy --model 'Gemini 3.6 Flash (High)' --agent gemini-fast-qa --sandbox "$@"
+}
+
+agy-qa() {
+  command agy --model 'Gemini 3.1 Pro (High)' --agent gemini-visual-qa --sandbox "$@"
+}
+export PATH="$HOME/.cargo/bin:$PATH"
