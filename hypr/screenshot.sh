@@ -1,8 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Create the Pictures directory if it doesn't exist
-mkdir -p ~/Pictures
+set -euo pipefail
 
-# Take a screenshot with a timestamp
-grim ~/Pictures/screenshot_$(date '+%Y-%m-%d_%H-%M-%S').png
+directory="$HOME/Pictures/Screenshots"
+mkdir -p "$directory"
+filename="$directory/$(date +%Y%m%d-%H%M%S).png"
 
+# Escape cancels selection without creating an empty capture.
+region="$(slurp -d)" || exit 0
+grim -g "$region" "$filename"
+wl-copy --type image/png < "$filename"

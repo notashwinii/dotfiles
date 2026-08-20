@@ -14,7 +14,10 @@
     "temperature",
     "memory",
     "cpu",
-    "custom/power_profile",
+    // [device] disabled: "custom/power_profile" is listed in the repo's modules-right but
+    // [device] has no matching module definition anywhere in the config, so waybar logs
+    // [device] it as an unknown module. Re-enable once a definition exists.
+    // "custom/power_profile",
     "battery",
     "backlight",
     "pulseaudio",
@@ -148,7 +151,12 @@
   },
 
   "temperature": {
-    "thermal-zone": 1,
+    // [device] thermal_zone/hwmon numbers are assigned in driver-probe order and shift between
+    // [device] boots -- zone 6 is currently iwlwifi (the wifi card), not the CPU. Point at the
+    // [device] coretemp platform device instead; "Package id 0" is the CPU package sensor.
+    // [device] Was: "thermal-zone": 1 (repo), then 6.
+    "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
+    "input-filename": "temp1_input",
     "format": "{temperatureF}°F ",
     "critical-threshold": 80,
     "format-critical": "{temperatureC}°C ",
