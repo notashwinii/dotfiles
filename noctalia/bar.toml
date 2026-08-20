@@ -15,8 +15,10 @@ capsule = false
 # - media
 # - tray
 # - system controls
-start = ["group:launcher-wallpaper", "workspaces"]
-center = ["clock", "patro-gap", "patro-date"]
+# Place the clock/date cluster to the left of the screen's midpoint.  Keeping
+# it in the start lane reserves the entire end lane for the tray and controls.
+start = ["group:launcher-wallpaper", "workspaces", "center-left-buffer", "clock", "patro-gap", "patro-date"]
+center = []
 end = ["media", "tray", "group:system-usage", "group:system-controls"]
 
 [widget.clock]
@@ -28,6 +30,10 @@ type = "ash/patro-date:date"
 
 [widget.patro-gap]
 type = "spacer"
+
+[widget.center-left-buffer]
+type = "spacer"
+length = 350
 
 [widget.workspaces]
 capsule = true
