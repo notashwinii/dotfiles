@@ -136,7 +136,7 @@ hl.bind(mainMod .. " + K", hl.dsp.window.close())
 -- Keep logout separate from workspace 6 (Super + Shift + Q).
 hl.bind(mainMod .. " + CTRL + Q", hl.dsp.exit())
 bind_exec(mainMod .. " + SHIFT + S", noctalia .. "session lock-and-suspend")
-bind_exec(mainMod .. " + N", "dolphin")
+bind_exec(mainMod .. " + N", "nemo")
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle", layout_aware = false }))
 bind_exec(mainMod .. " + U", "hyprctl dispatch focusurgentorlast")
