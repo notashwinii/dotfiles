@@ -1,7 +1,7 @@
 -- Hyprland 0.56+ configuration.  This replaces the deprecated hyprlang file.
 
 local terminal = "alacritty"
-local menu = "wofi --show drun -n"
+local noctalia = "noctalia msg "
 
 hl.monitor({ output = "eDP-1", mode = "1920x1080@60", position = "0x0", scale = 1 })
 hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@180", position = "1920x0", scale = 1 })
@@ -13,8 +13,8 @@ hl.config({
         kb_model = "",
         kb_options = "",
         kb_rules = "",
-        repeat_rate = 100,
-        repeat_delay = 200,
+        repeat_rate = 75,
+        repeat_delay = 500,
         follow_mouse = 1,
         sensitivity = 0.3,
         touchpad = { natural_scroll = true },
@@ -57,8 +57,14 @@ hl.config({
 
 hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
 
-for _, workspace in ipairs({ "6", "7", "8" }) do
-    hl.workspace_rule({ workspace = workspace, monitor = "eDP-1", default = true })
+-- Fixed workspace layout: laptop display uses 1–5; HDMI uses 6–10.
+-- Persistent workspaces remain available even when empty.  Do not set
+-- `default = true` here: a monitor can have only one default workspace.
+for _, workspace in ipairs({ "1", "2", "3", "4", "5" }) do
+    hl.workspace_rule({ workspace = workspace, monitor = "eDP-1", persistent = true })
+end
+for _, workspace in ipairs({ "6", "7", "8", "9", "10" }) do
+    hl.workspace_rule({ workspace = workspace, monitor = "HDMI-A-1", persistent = true })
 end
 
 -- Start these only when Hyprland itself starts, matching exec-once in hyprlang.
@@ -66,14 +72,11 @@ hl.on("hyprland.start", function()
     for _, command in ipairs({
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP",
         "/home/ash/.config/hypr/xdg-portal-hyprland",
-        "/home/ash/.config/waybar/launch.sh",
         "brave --profile-directory=Default",
         "alacritty",
         "discord",
-        "wl-paste --type text --watch cliphist store",
-        "wl-paste --type image --watch cliphist store",
         "obsidian",
-        "dunst",
+        "noctalia --daemon",
     }) do
         hl.exec_cmd(command)
     end
@@ -109,11 +112,16 @@ hl.window_rule({ name = "opacity-thunar", match = { class = "^(thunar)$" }, opac
 hl.window_rule({ name = "opacity-firefox-figma", match = { class = "^(firefox)$", title = "^(.*Figma.*)$" }, opacity = "1.0 1.0" })
 hl.window_rule({ name = "opacity-firefox-youtube", match = { class = "^(firefox)$", title = "^(.*YouTube.*)$" }, opacity = "1.0 1.0" })
 
--- The old gold rectangle around Wofi was its Hyprland active-window border.
-hl.window_rule({ name = "wofi-no-border", match = { class = "^(wofi)$" }, border_size = 0 })
+hl.window_rule({ name = "noctalia-settings", match = { class = "dev.noctalia.Noctalia" }, float = true, size = { 1080, 920 } })
+hl.layer_rule({
+    name = "noctalia",
+    match = { namespace = "^noctalia-(bar-.+|notification|dock|panel|attached-panel|osd|window-switcher)$" },
+    no_anim = true,
+    ignore_alpha = 0.5,
+    blur = true,
+    blur_popups = true,
+})
 hl.window_rule({ name = "float-thunar", match = { class = "^(thunar)$" }, float = true })
-hl.window_rule({ name = "float-pavucontrol", match = { class = "^(pavucontrol)$" }, float = true })
-hl.window_rule({ name = "float-blueman", match = { class = "^(blueman-manager)$" }, float = true, size = { 650, 400 } })
 
 -- Keybindings
 local mainMod = "SUPER"
@@ -125,33 +133,36 @@ bind_exec(mainMod .. " + Return", terminal)
 bind_exec(mainMod .. " + X", "firefox")
 bind_exec(mainMod .. " + Z", "command -v zen-browser >/dev/null && zen-browser || brave")
 hl.bind(mainMod .. " + K", hl.dsp.window.close())
-hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exit())
-bind_exec(mainMod .. " + SHIFT + S", "systemctl suspend && /home/ash/.config/hypr/swaylock.sh")
-bind_exec(mainMod .. " + E", "dolphin")
+-- Keep logout separate from workspace 6 (Super + Shift + Q).
+hl.bind(mainMod .. " + CTRL + Q", hl.dsp.exit())
+bind_exec(mainMod .. " + SHIFT + S", noctalia .. "session lock-and-suspend")
+bind_exec(mainMod .. " + N", "dolphin")
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle", layout_aware = false }))
 bind_exec(mainMod .. " + U", "hyprctl dispatch focusurgentorlast")
-bind_exec(mainMod .. " + SHIFT + R", "/home/ash/.config/waybar/launch.sh")
-bind_exec("SHIFT + SPACE", "voxtype record start")
-bind_exec("SHIFT + slash", "voxtype record stop")
-bind_exec("XF86AudioRaiseVolume", "pactl set-sink-volume @DEFAULT_SINK@ +10%", { repeating = true })
-bind_exec("XF86AudioLowerVolume", "pactl set-sink-volume @DEFAULT_SINK@ -10%", { repeating = true })
-bind_exec("XF86AudioMute", "pactl set-sink-mute @DEFAULT_SINK@ toggle")
-bind_exec("XF86MonBrightnessUp", "brightnessctl set 5%+", { repeating = true })
-bind_exec("XF86MonBrightnessDown", "brightnessctl set 5%-", { repeating = true })
+bind_exec(mainMod .. " + comma", noctalia .. "settings-toggle")
+-- Ctrl+Space starts recording; Ctrl+Menu (the key beside right Ctrl) stops it.
+-- This keeps plain Shift combinations available for normal typing (Shift+/ = ?).
+bind_exec("CTRL + SPACE", "voxtype record start")
+bind_exec("CTRL + Menu", "voxtype record stop")
+bind_exec("XF86AudioRaiseVolume", noctalia .. "volume-up", { repeating = true })
+bind_exec("XF86AudioLowerVolume", noctalia .. "volume-down", { repeating = true })
+bind_exec("XF86AudioMute", noctalia .. "volume-mute")
+bind_exec("XF86MonBrightnessUp", noctalia .. "brightness-up", { repeating = true })
+bind_exec("XF86MonBrightnessDown", noctalia .. "brightness-down", { repeating = true })
 hl.bind(mainMod .. " + Tab", hl.dsp.layout("swapwithmaster master"))
-bind_exec(mainMod .. " + R", menu)
 bind_exec("Print", "/home/ash/.config/hypr/screenshot.sh")
-bind_exec(mainMod .. " + SHIFT + V", "/home/ash/.config/hypr/clipboard-menu.sh")
+bind_exec(mainMod .. " + SHIFT + V", noctalia .. "panel-toggle clipboard")
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-bind_exec(mainMod .. " + Space", menu)
+bind_exec(mainMod .. " + Space", noctalia .. "panel-toggle launcher")
 hl.bind(mainMod .. " + SHIFT + Space", hl.dsp.layout("togglesplit"))
 
 for key, direction in pairs({ h = "left", l = "right", k = "up", j = "down" }) do
     hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ direction = direction }))
 end
 
-hl.bind(mainMod .. " + S", hl.dsp.submap("resize"))
+bind_exec(mainMod .. " + S", noctalia .. "panel-toggle control-center")
+hl.bind(mainMod .. " + CTRL + S", hl.dsp.submap("resize"))
 hl.define_submap("resize", function()
     hl.bind("l", hl.dsp.window.resize({ x = 20, y = 0, relative = true }), { repeating = true })
     hl.bind("h", hl.dsp.window.resize({ x = -20, y = 0, relative = true }), { repeating = true })
@@ -164,6 +175,12 @@ for i = 1, 10 do
     local key = tostring(i % 10)
     hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = tostring(i) }))
     hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = tostring(i) }))
+end
+
+-- Fast workspace row: Super+Q/W/E/R/A selects 6–10; Shift sends the window.
+for key, workspace in pairs({ Q = "6", W = "7", E = "8", R = "9", A = "10" }) do
+    hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = workspace }))
+    hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = workspace }))
 end
 hl.bind(mainMod .. " + Right", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + left", hl.dsp.focus({ workspace = "e-1" }))

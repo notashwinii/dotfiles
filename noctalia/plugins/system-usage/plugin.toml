@@ -1,0 +1,10 @@
+id = "ash/system-usage"
+name = "System Usage"
+version = "0.1.0"
+author = "ash"
+description = "Shows CPU, memory, and root-disk usage as percentages."
+plugin_api = 16
+
+[[widget]]
+id = "usage"
+entry = "usage.luau"

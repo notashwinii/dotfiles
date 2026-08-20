@@ -1,0 +1,109 @@
+# A transparent bar surface with deliberately separate widget capsules.
+[bar.default]
+thickness = 48
+scale = 1.05
+padding = 14
+widget_spacing = 8
+background_opacity = 0.0
+border_width = 0.0
+shadow = false
+capsule = false
+
+# Each entry below is a visually separate block:
+# - launcher + wallpaper
+# - workspaces
+# - media
+# - tray
+# - system controls
+start = ["group:launcher-wallpaper", "workspaces"]
+center = ["clock", "patro-gap", "patro-date"]
+end = ["media", "tray", "group:system-usage", "group:system-controls"]
+
+[widget.clock]
+# English time, weekday, and date. Patro supplies the adjacent BS date.
+format = "{:%H:%M · %a, %d %b}"
+
+[widget.patro-date]
+type = "ash/patro-date:date"
+
+[widget.patro-gap]
+type = "spacer"
+
+[widget.workspaces]
+capsule = true
+capsule_fill = "surface_variant"
+capsule_padding = 10
+capsule_radius = 18
+
+[widget.media]
+# Track titles create a wide, truncated capsule on smaller outputs.  Keep media
+# controls in Control Center instead of showing the constantly changing title.
+enabled = false
+capsule = true
+capsule_fill = "surface_variant"
+capsule_padding = 10
+capsule_radius = 18
+
+[widget.tray]
+capsule = true
+capsule_fill = "surface_variant"
+capsule_padding = 10
+capsule_radius = 18
+
+[widget.system-usage]
+type = "ash/system-usage:usage"
+
+# Use restrained semantic accents for fast visual scanning.  Only the icons are
+# tinted; text remains high-contrast for readability.
+[widget.notifications]
+icon_color = "primary"
+
+[widget.clipboard]
+icon_color = "tertiary"
+
+[widget.network]
+icon_color = "secondary"
+
+[widget.bluetooth]
+icon_color = "primary"
+
+[widget.volume]
+icon_color = "tertiary"
+
+[widget.brightness]
+icon_color = "secondary"
+
+[widget.battery]
+icon_color = "primary"
+
+[widget.control-center]
+icon_color = "tertiary"
+
+[widget.session]
+icon_color = "error"
+
+[[bar.default.capsule_group]]
+id = "launcher-wallpaper"
+members = ["launcher", "wallpaper"]
+fill = "surface_variant"
+padding = 10
+radius = 18
+opacity = 0.96
+widget_spacing = 8
+
+[[bar.default.capsule_group]]
+id = "system-usage"
+members = ["system-usage"]
+fill = "surface_variant"
+padding = 6
+radius = 18
+opacity = 0.96
+
+[[bar.default.capsule_group]]
+id = "system-controls"
+members = ["notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "control-center", "session"]
+fill = "surface_variant"
+padding = 10
+radius = 18
+opacity = 0.96
+widget_spacing = 11

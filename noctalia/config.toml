@@ -1,0 +1,46 @@
+# Keep location-driven services fixed to Lalitpur rather than IP geolocation.
+[location]
+auto_locate = false
+address = "Lalitpur, Nepal"
+
+[weather]
+enabled = true
+refresh_minutes = 30
+unit = "metric"
+
+[system.monitor]
+enabled = true
+
+[plugins]
+enabled = ["ash/patro-date", "ash/system-usage"]
+
+# Use DDC/CI when the connected external monitor exposes brightness control.
+[brightness]
+enable_ddcutil = true
+
+# The top bar is transparent, but pop-up panels such as Control Center stay solid.
+[shell.panel]
+transparency_mode = "solid"
+
+[control_center]
+show_shortcut_labels = true
+
+# Keep the power shortcut visible; it shows the active profile when the
+# system power-profile service is available.
+[[control_center.shortcuts]]
+type = "wifi"
+
+[[control_center.shortcuts]]
+type = "bluetooth"
+
+[[control_center.shortcuts]]
+type = "caffeine"
+
+[[control_center.shortcuts]]
+type = "nightlight"
+
+[[control_center.shortcuts]]
+type = "notification"
+
+[[control_center.shortcuts]]
+type = "power_profile"
