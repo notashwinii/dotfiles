@@ -33,7 +33,7 @@ type = "spacer"
 
 [widget.center-left-buffer]
 type = "spacer"
-length = 350
+length = 250
 
 [widget.workspaces]
 capsule = true
